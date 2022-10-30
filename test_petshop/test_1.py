@@ -1,15 +1,21 @@
 from urllib import response
 import requests
 import pytest
+import random
 
-def test_Add_a_new_pet_status_code() :
+url_petshop = "https://petstore.swagger.io/v2/pet"
+names = ['Bob', 'Mike', 'Pup', 'Sam', 'Sharik', 'Basya', 'Doggie', 'Max' , 'Rex']
+random_name = random.choice(names)
+id = random.randint(0,100)
+
+def test_add_a_new_pet_status_code() :
     data_pet = {
-        "id": 10,
+        "id": id,
         "category": {
         "id": 0,
         "name": "string"
          },
-        "name": "Pup",
+        "name": random_name,
          "photoUrls": [
         "string"
         ],
@@ -21,19 +27,13 @@ def test_Add_a_new_pet_status_code() :
         ],
         "status": "available"
         }
-    url = "https://petstore.swagger.io/v2/pet"
-    response = requests.post(url, json = data_pet)
-    assert response.status_code == 200
+    url = url_petshop
+    assert requests.post(url, json = data_pet).status_code == 200
 
 def test_find_pet_id_status_code():
-    data_find = 10
-    url = f"https://petstore.swagger.io/v2/pet/{data_find}"
-    find_pet = requests.get(url)
-    assert find_pet.status_code == 200
+    url = '/'.join([url_petshop, str(id)])
+    assert requests.get(url).status_code == 200
 
 def test_find_pet_id_check_name():
-    data_find = 10
-    url = f"https://petstore.swagger.io/v2/pet/{data_find}"
-    find_pet = requests.get(url)
-    find_pet = find_pet.json()
-    assert find_pet["name"] == "Pup"
+    url = '/'.join([url_petshop, str(id)])
+    assert requests.get(url).json()["name"] == random_name
